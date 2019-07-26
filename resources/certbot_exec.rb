@@ -9,13 +9,13 @@ property :packages, [String, Array], default: [], coerce: proc {|x| [x].flatten 
 default_action :install
 
 action :install do
-  r = with_run_context :root do 
+  r = with_run_context :parent do 
     find_resource :certbot_repo, 'repo' do
       action :create
     end
   end
 
-  find_r = with_run_context :root do
+  find_r = with_run_context :parent do
     find_resource :certbot_pkg, 'certbot' do |_new_resource|
       action :install
       packages []
@@ -24,7 +24,7 @@ action :install do
   end
   find_r.packages += new_resource.packages
 
-  certbot_r = with_run_context :root do
+  certbot_r = with_run_context :parent do
     find_resource :certbot_cmd, 'execute-certbot' do |_new_resource|
       domains []
       post_hook []
