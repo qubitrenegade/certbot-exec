@@ -23,7 +23,7 @@ action_class do
 
   def run
     # Chef::Log.debug "certbot command: #{cmd}"
-    puts "certbot cli: #{cmd}" unless cbe_verbose
+    puts "\n    certbot cli: #{cmd}" unless cbe_verbose
     shell_out!(
       cmd,
       live_stream: STDOUT
