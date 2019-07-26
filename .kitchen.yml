@@ -25,6 +25,8 @@ suites:
   - name: default
     run_list:
       - recipe[test-certbot-exec::default]
+      - recipe[test-certbot-exec::test]
+      - recipe[test-certbot-exec2::default]
     verifier:
       inspec_tests:
         - test/integration/default
