@@ -9,7 +9,7 @@ property :packages, [String, Array], default: [], coerce: proc { |x| [x].flatten
 default_action :install
 
 action :install do
-  r = with_run_context :parent do
+  with_run_context :parent do
     find_resource :certbot_repo, 'repo' do
       action :create
     end
