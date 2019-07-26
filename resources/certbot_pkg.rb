@@ -3,7 +3,7 @@ resource_name :certbot_pkg
 
 default_action :install
 
-property :packages, [String, Array], default: [], coerce: proc {|x| [x].flatten }
+property :packages, [String, Array], default: [], coerce: proc { |x| [x].flatten }
 
 action :install do
   package 'install-certbot' do

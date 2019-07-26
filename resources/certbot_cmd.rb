@@ -1,9 +1,9 @@
 provides :certbot_cmd
 resource_name :certbot_cmd
 
-property :domains, [String, Array], name_property: true, coerce: proc {|x| [x].flatten }
-property :post_hook, [String, Array], default: [], coerce: proc {|x| [x].flatten }
-property :extra_args, [String, Array], coerce: proc {|x| [x].flatten }
+property :domains, [String, Array], name_property: true, coerce: proc { |x| [x].flatten }
+property :post_hook, [String, Array], default: [], coerce: proc { |x| [x].flatten }
+property :extra_args, [String, Array], coerce: proc { |x| [x].flatten }
 
 default_action :exec
 
