@@ -2,8 +2,6 @@ Ohai.plugin :Certbot do
   provides 'certbot', 'certbot/certs', 'certbot/valid', 'certbot/days_remain', 'certbot/remain_30'
   provides 'certbot/san_list', 'certbot/ssl_cert_path', 'certbot/ssl_key_path'
 
-  # 24 hrs/day * 60 minutes / hr * 60 seconds / minute
-  sec_per_day = 86400
   cert_path = '/etc/letsencrypt/live'.freeze
 
   collect_data :default do
@@ -18,7 +16,7 @@ Ohai.plugin :Certbot do
 
       # Get the cert with the longest
       cert = certbot[:certs].select(&:valid?)
-                            .sort { |a, b| b.time_remain <=> a.time_remain }.first
+                            .min { |a, b| b.time_remain <=> a.time_remain }
 
       certbot[:valid] = cert.valid?
       certbot[:days_remain] = cert.days_remain.to_i

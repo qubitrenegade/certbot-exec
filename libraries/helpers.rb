@@ -4,7 +4,7 @@ module CertbotExec
     def certbot_exec
       node['certbot-exec']
     end
-    alias_method :cbe, :certbot_exec
+    alias cbe certbot_exec
 
     def cbe_dry_run?
       cbe['dry_run']
@@ -33,7 +33,7 @@ module CertbotExec
     def certbot
       node['certbot']
     end
-    alias_method :cb, :certbot
+    alias cb certbot
 
     def cb_valid?
       true # cb['valid']

@@ -5,6 +5,10 @@ describe CertbotExec::Helpers do
   let(:cbeh) { Object.new.extend(CertbotExec::Helpers) }
   before do
     default = {}
+    # Is it _really_ a security risk?  It's just in the test...
+    # I feel like it's an acceptable risk since what we're testing is really these values...
+    # also, good way to test the result of "ovverride" attributes at the `default` level?
+    # Intentionally not diabling rubocop/cookstyle errors.
     eval(
       File.read(
         File.join(base_dir, 'attributes', 'default.rb')
