@@ -4,11 +4,13 @@ require 'chefspec/ohai'
 describe_ohai_plugin :Certbot do
   let(:plugin_file) { 'files/default/certbot.rb' }
 
-  it { expect(plugin).to provides_attribute 'certbot' }
-  it { expect(plugin).to provides_attribute 'certbot/certs' }
-  it { expect(plugin).to provides_attribute 'certbot/days_remain' }
-  it { expect(plugin).to provides_attribute 'certbot/cert_valid' }
-  it { expect(plugin).to provides_attribute 'certbot/san_list' }
+  [
+    'certbot', 'certbot/certs', 'certbot/valid', 
+    'certbot/days_remain', 'certbot/remain_30', 'certbot/san_list', 
+    'certbot/ssl_cert_path', 'certbot/ssl_key_path',
+  ].each do |attr|
+    it { expect(plugin).to provides_attribute attr }
+  end
 
   context 'before certbot has run' do
     it 'certbot should be a Mash' do
@@ -18,12 +20,17 @@ describe_ohai_plugin :Certbot do
 
     it 'certbot/certs should be {}' do
       expect(plugin_attribute('certbot/certs'))
-         .to be_a Mash
+         .to eq []
     end
 
     it 'certbot/days_remain should be 0' do
       expect(plugin_attribute('certbot/days_remain'))
         .to eq 0
+    end
+
+    it 'the cert should be invalid' do
+      expect(plugin_attribute('certbot/valid'))
+        .to eq false
     end
   end
 
@@ -58,7 +65,16 @@ describe_ohai_plugin :Certbot do
 
     it 'sets certbot/days_remain' do
       expect(plugin_attribute 'certbot/days_remain')
-        .to eq 500
+        .to eq 89
+    end
+
+    it 'sets certbot/valud to true' do
+      expect(plugin_attribute 'certbot/valid').to eq true
+    end
+
+    it 'sets certbot/ssl_cert_path' do
+      expect(plugin_attribute 'certbot/ssl_cert_path')
+        .to eq '/etc/letsencrypt/live/foo.example.com/fullchain.pem'
     end
   end
 end
