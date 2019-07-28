@@ -29,5 +29,22 @@ module CertbotExec
     def cbe_server
       cbe['acme'][cbe['server']]
     end
+
+    def certbot
+      node['certbot']
+    end
+    alias_method :cb, :certbot
+
+    def cb_valid?
+      true # cb['valid']
+    end
+
+    def cb_remain_30?
+      cb['remain_30']
+    end
+
+    def cb_domain_includes?(domain_list)
+      cb[san_list] == domain_list
+    end
   end
 end

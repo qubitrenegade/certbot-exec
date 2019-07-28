@@ -5,6 +5,7 @@ property :domains, [String, Array], name_property: true, coerce: proc { |x| [x].
 property :post_hook, [String, Array], default: [], coerce: proc { |x| [x].flatten }
 property :extra_args, [String, Array], default: [], coerce: proc { |x| [x].flatten }
 property :packages, [String, Array], default: [], coerce: proc { |x| [x].flatten }
+property :force, [TrueClass, FalseClass], default: false
 
 default_action :install
 
@@ -12,11 +13,12 @@ action :install do
   with_run_context :parent do
     ohai_plugin 'certbot' do
       cookbook 'certbot-exec'
+      action :create
     end
 
     ohai 'certbot' do
       plugin 'certbot'
-      action :reload
+      action :nothing
     end
 
     find_resource :certbot_repo, 'repo' do
@@ -39,13 +41,20 @@ action :install do
       post_hook []
       extra_args []
       notifies :install, 'certbot_pkg[certbot]', :before
-
+      notifies :create, 'ohai_plugin[certbot]', :immediate
+      notifies :reload, 'ohai[certbot]', :immediate
       action :exec
     end
   end
+  certbot_r.force ||= new_resource.force
   certbot_r.domains += new_resource.domains
   certbot_r.post_hook += new_resource.post_hook
   certbot_r.extra_args += new_resource.extra_args
+  certbot_r.action = if new_resource.force || certbot_r.action == :force_exec
+                       :force_exec
+                     else
+                       :exec
+                     end
 end
 
 def after_created
