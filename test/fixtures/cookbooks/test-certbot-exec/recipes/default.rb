@@ -18,3 +18,9 @@ end
 certbot_exec 'boz.example.com' do
   post_hook 'systemctl restart theworld'
 end
+
+puts '#' * 500 
+puts node['certbot']
+pp node['certbot']['certs']['foo.bar.com']
+puts "Cert valud? #{node['certbot']['certs']['foo.bar.com'].cert_valid?}"
+puts '#' * 500 

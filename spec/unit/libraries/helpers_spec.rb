@@ -1,5 +1,4 @@
 require 'spec_helper'
-base_dir = File.dirname(File.dirname(File.dirname(File.dirname(__FILE__))))
 require "#{base_dir}/libraries/helpers"
 
 describe CertbotExec::Helpers do

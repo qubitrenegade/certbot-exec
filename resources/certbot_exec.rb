@@ -10,6 +10,15 @@ default_action :install
 
 action :install do
   with_run_context :parent do
+    ohai_plugin 'certbot' do
+      cookbook 'certbot-exec'
+    end
+
+    ohai 'certbot' do
+      plugin 'certbot'
+      action :reload
+    end
+
     find_resource :certbot_repo, 'repo' do
       action :create
     end
@@ -30,6 +39,7 @@ action :install do
       post_hook []
       extra_args []
       notifies :install, 'certbot_pkg[certbot]', :before
+
       action :exec
     end
   end

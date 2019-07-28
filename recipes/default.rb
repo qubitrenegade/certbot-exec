@@ -23,3 +23,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
+# This recipe intentionally left empty.
+
+Chef::Log.warn "You don't need to add certbot-exec to your run list, just your metatdata.rb"
