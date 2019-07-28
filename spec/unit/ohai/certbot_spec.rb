@@ -5,22 +5,22 @@ describe_ohai_plugin :Certbot do
   let(:plugin_file) { 'files/default/certbot.rb' }
 
   [
-    'certbot', 'certbot/certs', 'certbot/valid', 
-    'certbot/days_remain', 'certbot/remain_30', 'certbot/san_list', 
-    'certbot/ssl_cert_path', 'certbot/ssl_key_path',
+    'certbot', 'certbot/certs', 'certbot/valid',
+    'certbot/days_remain', 'certbot/remain_30', 'certbot/san_list',
+    'certbot/ssl_cert_path', 'certbot/ssl_key_path'
   ].each do |attr|
     it { expect(plugin).to provides_attribute attr }
   end
 
   context 'before certbot has run' do
     it 'certbot should be a Mash' do
-      expect(plugin_attribute 'certbot')
+      expect(plugin_attribute('certbot'))
         .to be_a Mash
     end
 
     it 'certbot/certs should be {}' do
       expect(plugin_attribute('certbot/certs'))
-         .to eq []
+        .to eq []
     end
 
     it 'certbot/days_remain should be 0' do
@@ -47,9 +47,9 @@ describe_ohai_plugin :Certbot do
       allow(Dir).to receive(:glob)
         .with('/etc/letsencrypt/live/*')
         .and_return([
-          '/etc/letsencrypt/live/foo.example.com',
-          '/etc/letsencrypt/live/README.md',
-        ])
+                      '/etc/letsencrypt/live/foo.example.com',
+                      '/etc/letsencrypt/live/README.md',
+                    ])
 
       allow(File).to receive(:directory?)
         .with('/etc/letsencrypt/live/foo.example.com')
@@ -64,16 +64,16 @@ describe_ohai_plugin :Certbot do
     end
 
     it 'sets certbot/days_remain' do
-      expect(plugin_attribute 'certbot/days_remain')
+      expect(plugin_attribute('certbot/days_remain'))
         .to eq 89
     end
 
     it 'sets certbot/valud to true' do
-      expect(plugin_attribute 'certbot/valid').to eq true
+      expect(plugin_attribute('certbot/valid')).to eq true
     end
 
     it 'sets certbot/ssl_cert_path' do
-      expect(plugin_attribute 'certbot/ssl_cert_path')
+      expect(plugin_attribute('certbot/ssl_cert_path'))
         .to eq '/etc/letsencrypt/live/foo.example.com/fullchain.pem'
     end
   end

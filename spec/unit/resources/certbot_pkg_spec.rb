@@ -14,11 +14,10 @@ describe 'certbot_pkg' do
       certbot_pkg 'foo'
     end
 
-    it 'installs certbot' do 
+    it 'installs certbot' do
       is_expected.to install_package('install-certbot')
         .with(package_name: ['certbot'])
     end
-
   end
   context 'certbot_pkg with string input' do
     recipe do
@@ -29,19 +28,19 @@ describe 'certbot_pkg' do
 
     it 'installs certbot and foo' do
       is_expected.to install_package('install-certbot')
-        .with(package_name: ['certbot', 'foo'])
+        .with(package_name: %w(certbot foo))
     end
   end
   context 'certbot_pkg with array input' do
     recipe do
       certbot_pkg 'foo' do
-        packages ['foo', 'bar']
+        packages %w(foo bar)
       end
     end
 
     it 'installs certbot, with foo and bar' do
       is_expected.to install_package('install-certbot')
-        .with(package_name: ['certbot', 'foo', 'bar'])
+        .with(package_name: %w(certbot foo bar))
     end
   end
 end

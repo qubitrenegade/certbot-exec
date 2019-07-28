@@ -13,7 +13,7 @@ describe CertbotExec::Helpers do
 
     allow(cbeh)
       .to receive(:node)
-      .and_return(Hashie::Mash.new default)
+      .and_return(Hashie::Mash.new(default))
   end
 
   describe '#certbot_exec' do

@@ -23,7 +23,7 @@ end
 action :force_exec do
   converge_by 'executing certbot cli command' do
     certbot
-  end  
+  end
 end
 
 action_class do

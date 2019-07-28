@@ -16,10 +16,10 @@ Ohai.plugin :Certbot do
         certbot[:certs] << cert
       end
 
-      # Get the cert with the longest 
-      cert = certbot[:certs].select { |cert| cert.valid? }
-        .sort{ |a,b| b.time_remain <=> a.time_remain }.first
-      
+      # Get the cert with the longest
+      cert = certbot[:certs].select(&:valid?)
+                            .sort { |a, b| b.time_remain <=> a.time_remain }.first
+
       certbot[:valid] = cert.valid?
       certbot[:days_remain] = cert.days_remain.to_i
       certbot[:remain_30] = cert.remain_30?
@@ -34,9 +34,9 @@ Ohai.plugin :Certbot do
   end
 
   def dir_list(dir)
-    Dir.glob("#{dir}/*").select {|f| File.directory? f}
+    Dir.glob("#{dir}/*").select { |f| File.directory? f }
   end
-    
+
   class CertbotCert
     attr_reader :cert, :ssl_cert_path, :ssl_key_path
 
@@ -48,7 +48,7 @@ Ohai.plugin :Certbot do
     end
 
     def cert_name
-      cert.subject.to_utf8.gsub('CN=','')
+      cert.subject.to_utf8.gsub('CN=', '')
     end
 
     def sec_per_day
@@ -78,8 +78,8 @@ Ohai.plugin :Certbot do
 
     def san_list
       cert.extensions
-        .select { |e| e.oid == 'subjectAltName' }
-        .map{ |e| e.value.gsub('DNS:', '') }
+          .select { |e| e.oid == 'subjectAltName' }
+          .map { |e| e.value.gsub('DNS:', '') }
     end
   end
 end

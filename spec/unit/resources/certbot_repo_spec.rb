@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'certbot_repo' do
   step_into :certbot_repo
-  
+
   before do
     stubs_for_provider do |res|
       allow(res).to receive(:include_recipe).and_return true
@@ -10,7 +10,6 @@ describe 'certbot_repo' do
   end
 
   context 'certbot_repo_resouce' do
-
     recipe do
       certbot_repo 'foo'
     end
