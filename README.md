@@ -50,6 +50,8 @@ I imagine, you couldn't run `certbot-plugin-nginx` with `certbot-plugin-apache`.
 
 ## Discussion
 
+The idea was that we might have multiple services running on one host where we want to generate our SSL certificates.  But we probably don't want to call `certbot` cli utility multiple times as it has trouble when rereregenerating certificates.  Basically, I want to run `cookbook_a` and `cookbook_b` on the same host today, but they'll likely need to run on separate hosts tomorrow.  So I want to write them like they know nothing about each other, but they need to play nicely with each other.  This should be easy to achieve with a common `certbot` API that can "roll" all invocations into one command.
+
 We probably want Chef to manage `nginx` restarts for instance.  However, at this point we're not really sure when we're renewing the cert from chef... so we're _trying_ to defer to `certbot` to do the actual restarting..
 
 Also, design is not set in stone...  Like, is there a way to load the helpers from the ohai plugin?
