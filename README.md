@@ -6,7 +6,7 @@ As it is a library cookbook, it does not provide cookbooks to be included in you
 
 You probably don't want to use this cookbook directly either, instead opting to wrap it in your own custom provider.  However, as `certbot_exec` API IS designed to be wrapped by other resources, you _can_ provide enough parameters in your cookbook to use this resource directly.
 
-If you are looking to get started quickly, skip to the [Discussion](##Discussion) and head straight to [Usage](##Usage).
+If you are looking to get started quickly, skip to the [Discussion](/certbot-exec#design) and head straight to [Usage](certbot-exec#usage).
 
 ## Design
 
