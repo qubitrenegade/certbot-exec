@@ -22,7 +22,7 @@ module CertbotExec
       cbe['packages']
     end
 
-    def cbe_verbose
+    def cbe_print_cmd
       cbe['print_cmd']
     end
 
@@ -36,11 +36,11 @@ module CertbotExec
     alias cb certbot
 
     def cb_valid?
-      true # cb['valid']
+      cb['valid'] || false
     end
 
     def cb_remain_30?
-      cb['remain_30']
+      cb['remain_30'] || false
     end
 
     def cb_domain_includes?(domain_list)

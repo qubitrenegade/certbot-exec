@@ -50,7 +50,7 @@ Ohai.plugin :Certbot do
     end
 
     def sec_per_day
-      # 24 hrs/day * 60 minutes / hr * 60 seconds / minute
+      # 24 hours / day * 60 minutes / hour * 60 seconds / minute
       86400
     end
 
