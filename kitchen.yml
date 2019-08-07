@@ -31,6 +31,6 @@ suites:
       inspec_tests:
         - test/integration/default
     attributes:
-      certbot_exec:
+      certbot-exec:
         print_cmd: true
         server: stage
