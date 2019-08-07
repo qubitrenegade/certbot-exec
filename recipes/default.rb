@@ -26,4 +26,7 @@
 #
 # This recipe intentionally left empty.
 
-Chef::Log.warn "You don't need to add certbot-exec to your run list, just your metatdata.rb"
+log "You don't need to add certbot-exec to your run list, just your metatdata.rb" do
+  level :warn  
+  action :write
+end

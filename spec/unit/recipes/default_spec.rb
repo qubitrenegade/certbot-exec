@@ -38,6 +38,11 @@ describe 'certbot-exec::default' do
     it 'converges successfully' do
       expect { chef_run }.to_not raise_error
     end
+
+    it do 
+      is_expected
+        .to write_log "You don't need to add certbot-exec to your run list, just your metatdata.rb"
+    end
   end
 
   context 'When all attributes are default, on CentOS 7.4.1708' do

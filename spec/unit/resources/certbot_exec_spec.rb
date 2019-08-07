@@ -1,6 +1,6 @@
 #
 # Cookbook:: certbot-exec
-# Spec:: resources/certbot_pkg
+# Spec:: resources/certbot_exec
 #
 # The MIT License (MIT)
 #
@@ -22,52 +22,25 @@
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# THE SOFTWARE
 
 require 'spec_helper'
 
-describe 'certbot_pkg' do
+describe 'certbot_exec' do
   platform 'ubuntu'
-  step_into :certbot_pkg
+  step_into :certbot_exec
 
-  stubs_for_resource do |res|
-    allow(res).to receive(:cbe_packages)
-      .and_return ['certbot']
-  end
-
-  context 'certbot_pkg resource with no input' do
+  context 'certbot_exec resource with no input' do
     recipe do
-      certbot_pkg 'foo'
+      certbot_exec 'foo.example.com'
     end
+    
+    it { is_expected.to install_certbot_exec 'foo.example.com' }
 
-    it { is_expected.to install_certbot_pkg 'foo' }
-    it 'should install certbot package' do
-      is_expected.to install_package('install-certbot')
-        .with(package_name: ['certbot'])
-    end
-  end
-  context 'certbot_pkg with string input' do
-    recipe do
-      certbot_pkg 'foo' do
-        packages 'foo'
-      end
-    end
-
-    it 'should install certbot and foo' do
-      is_expected.to install_package('install-certbot')
-        .with(package_name: %w(certbot foo))
-    end
-  end
-  context 'certbot_pkg with array input' do
-    recipe do
-      certbot_pkg 'foo' do
-        packages %w(foo bar)
-      end
-    end
-
-    it 'should install certbot, with foo and bar' do
-      is_expected.to install_package('install-certbot')
-        .with(package_name: %w(certbot foo bar))
-    end
+    # all fail with 'undefined method `node' for nil:NilClass'...
+    it { is_expected.to create_ohai_plugin 'certbot' }
+    it { is_expected.to create_certbot_repo 'repo' }
+    it { is_expected.to install_certbot_pkg 'certbot' }
+    it { is_expected.to exec_certbot_cmd 'execute-certbot' }
   end
 end

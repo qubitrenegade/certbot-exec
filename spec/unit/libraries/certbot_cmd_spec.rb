@@ -1,6 +1,6 @@
 #
 # Cookbook:: certbot-exec
-# Spec:: libraries/helpers_spec
+# Spec:: libraries/certbot_cmd
 #
 # The MIT License (MIT)
 #
@@ -25,41 +25,43 @@
 # THE SOFTWARE.
 
 require 'spec_helper'
-require "#{base_dir}/libraries/helpers"
+require "#{base_dir}/libraries/certbot_cmd"
 
-describe CertbotExec::Helpers do
-  let(:cbeh) { Object.new.extend(CertbotExec::Helpers) }
+new_resource = Struct.new(:domains, :post_hook, :extra_args)
+                .new(
+                  ['domain-foo1', 'domain-bar2'],
+                  ['post-hook foo 1', 'post-hook foo 2'],
+                  ['--extra-args1', '--extra-args2']
+                )
+
+describe CertbotExec::CertbotCmd do
+  let(:cb_cmd) { Object.new.extend(CertbotExec::CertbotCmd) }
   before do
-    allow(cbeh)
+
+    allow(cb_cmd)
       .to receive(:node)
       .and_return(Hashie::Mash.new(default_attrs_from_file))
+    allow(cb_cmd)
+      .to receive(:new_resource)
+      .and_return(new_resource)
   end
 
-  describe '#certbot_exec' do
-    it 'returns certbot-exec hash' do
-      expect(cbeh.certbot_exec).to be_kind_of Hashie::Mash
-    end
-
-    it 'responds to cbe as an alias' do
-      expect(cbeh.cbe).to be_kind_of Hashie::Mash
-    end
-  end
-
-  describe '#cbe_dry_run?' do
-    it 'checks for dry run' do
-      expect(cbeh.cbe_dry_run?).to eql true
+  describe '#cmd' do
+    it 'executes certbot with expected parameters' do
+      full_cmd = 'certbot certonly -q --expand --dry-run '
+      full_cmd += '--server https://acme-v02.api.letsencrypt.org/directory '
+      full_cmd += '--email youneedtosetme@least.com --domains domain-foo1,domain-bar2 '
+      full_cmd += "--post-hook 'post-hook foo 1' --post-hook 'post-hook foo 2' "
+      full_cmd += '--extra-args1 --extra-args2'
+      expect(cb_cmd.cmd).to eql full_cmd
     end
   end
 
-  describe '#cbe_agree_to_tos?' do
-    it 'is false by default' do
-      expect(cbeh.cbe_agree_to_tos?).to be false
-    end
-  end
-
-  describe '#cbe_server' do
-    it 'returns the correct server' do
-      expect(cbeh.cbe_server).to eql 'https://acme-v02.api.letsencrypt.org/directory'
+  describe '#run' do
+    it '"executes" "run"' do
+      # This seems silly...  Is it really appropriate to test `shell_out!`?
+      allow(cb_cmd).to receive(:shell_out!).and_return true
+      expect(cb_cmd.run).to eql true
     end
   end
 end
