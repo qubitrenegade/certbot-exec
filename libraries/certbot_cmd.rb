@@ -54,7 +54,6 @@ module CertbotExec
       new_resource.post_hook.each do |hook|
         cmd += " --post-hook '#{hook}'"
       end
-      # end unless new_resource.post_hook.empty?
       cmd += ' ' + new_resource.extra_args.join(' ') if new_resource.extra_args
       cmd
     end

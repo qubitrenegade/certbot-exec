@@ -10,7 +10,7 @@ property :force, [TrueClass, FalseClass], default: false
 default_action :install
 
 action :install do
-  with_run_context :parent do
+  with_run_context :root do
     ohai_plugin 'certbot' do
       cookbook 'certbot-exec'
       action :create
@@ -26,7 +26,7 @@ action :install do
     end
   end
 
-  find_r = with_run_context :parent do
+  find_r = with_run_context :root do
     find_resource :certbot_pkg, 'certbot' do |_new_resource|
       action :install
       packages []
@@ -35,7 +35,7 @@ action :install do
   end
   find_r.packages += new_resource.packages
 
-  certbot_r = with_run_context :parent do
+  certbot_r = with_run_context :root do
     find_resource :certbot_cmd, 'execute-certbot' do |_new_resource|
       domains []
       post_hook []
