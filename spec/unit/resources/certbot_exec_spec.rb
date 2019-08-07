@@ -37,13 +37,10 @@ describe 'certbot_exec' do
     
     it { is_expected.to install_certbot_exec 'foo.example.com' }
 
-    # Per Chef community Slack:
-    # starts to smell like chefspec is buggy then and just shouldn’t be used to test this
-    #
-    # all fail with 'undefined method `node' for nil:NilClass'...
-    # it { is_expected.to create_ohai_plugin 'certbot' }
-    # it { is_expected.to create_certbot_repo 'repo' }
-    # it { is_expected.to install_certbot_pkg 'certbot' }
-    # it { is_expected.to exec_certbot_cmd 'execute-certbot' }
+    it { is_expected.to create_ohai_plugin 'certbot' }
+    it { is_expected.to nothing_ohai 'certbot' }
+    it { is_expected.to create_certbot_repo 'repo' }
+    it { is_expected.to install_certbot_pkg 'certbot' }
+    it { is_expected.to exec_certbot_cmd 'execute-certbot' }
   end
 end
