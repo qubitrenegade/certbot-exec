@@ -11,9 +11,7 @@ action :exec do
     converge_by 'force execute certbot command' do
       certbot
     end
-  end
-
-  unless cb_valid? || cb_remain_30?
+  elsif !cb_valid? || !cb_remain_30?
     converge_by 'execute certbot command' do
       certbot
     end
