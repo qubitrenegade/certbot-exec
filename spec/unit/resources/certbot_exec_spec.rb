@@ -34,7 +34,7 @@ describe 'certbot_exec' do
     recipe do
       certbot_exec 'foo.example.com'
     end
-    
+
     it { is_expected.to install_certbot_exec 'foo.example.com' }
 
     it { is_expected.to create_ohai_plugin 'certbot' }

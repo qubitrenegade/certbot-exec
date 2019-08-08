@@ -33,7 +33,7 @@ module CertbotExec
     def certbot
       run
     end
-  
+
     def run
       # Chef::Log.debug "certbot command: #{cmd}"
       puts "\n    certbot cli: #{cmd}" if cbe_print_cmd
@@ -42,7 +42,7 @@ module CertbotExec
         live_stream: STDOUT
       )
     end
-  
+
     def cmd
       cmd = 'certbot certonly -q'
       cmd += ' --expand'

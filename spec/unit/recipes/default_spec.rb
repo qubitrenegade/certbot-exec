@@ -39,7 +39,7 @@ describe 'certbot-exec::default' do
       expect { chef_run }.to_not raise_error
     end
 
-    it do 
+    it do
       is_expected
         .to write_log "You don't need to add certbot-exec to your run list, just your metatdata.rb"
     end

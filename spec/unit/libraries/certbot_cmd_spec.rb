@@ -28,16 +28,15 @@ require 'spec_helper'
 require "#{base_dir}/libraries/certbot_cmd"
 
 new_resource = Struct.new(:domains, :post_hook, :extra_args)
-                .new(
-                  ['domain-foo1', 'domain-bar2'],
+                     .new(
+                       ['domain-foo1', 'domain-bar2'],
                   ['post-hook foo 1', 'post-hook foo 2'],
                   ['--extra-args1', '--extra-args2']
-                )
+                     )
 
 describe CertbotExec::CertbotCmd do
   let(:cb_cmd) { Object.new.extend(CertbotExec::CertbotCmd) }
   before do
-
     allow(cb_cmd)
       .to receive(:node)
       .and_return(Hashie::Mash.new(default_attrs_from_file))

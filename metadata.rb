@@ -13,6 +13,7 @@ depends 'yum-epel'
 issues_url 'https://github.com/qubitrenegade/certbot-exec/issues'
 source_url 'https://github.com/qubitrenegade/certbot-exec'
 
-%w(centos ubuntu).each do platform
+%w(centos ubuntu).each do
+  platform
   supports platform
 end
