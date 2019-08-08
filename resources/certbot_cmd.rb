@@ -26,6 +26,4 @@ end
 
 action_class do
   include CertbotExec::CertbotCmd
-
-  @foo = 'bar'
 end

@@ -34,3 +34,13 @@ suites:
       certbot-exec:
         print_cmd: true
         server: stage
+  - name: simple
+    run_list:
+      - recipe[test-certbot-exec::simple]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+      certbot-exec:
+        print_cmd: true
+        server: stage

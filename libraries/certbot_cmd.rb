@@ -30,17 +30,33 @@ module CertbotExec
   module CertbotCmd
     include CertbotExec::Helpers
 
+    attr_writer :post_hook, :extra_args
+
+    def initialize(*args)
+      @post_hook = []
+      @extra_args = []
+      super *args
+    end
+
     def certbot
       run
     end
 
     def run
       # Chef::Log.debug "certbot command: #{cmd}"
-      puts "\n    certbot cli: #{cmd}" if cbe_print_cmd
+      puts "\n    certbot cli: '#{cmd}'" if cbe_print_cmd
       shell_out!(
         cmd,
         live_stream: STDOUT
       )
+    end
+
+    def post_hooks
+      @post_hook + new_resource.post_hook
+    end
+
+    def extra_args
+      @extra_args + new_resource.extra_args
     end
 
     def cmd
@@ -51,10 +67,10 @@ module CertbotExec
       cmd += " --server #{cbe_server}"
       cmd += " --email #{cbe_email}" if cbe_email
       cmd += " --domains #{new_resource.domains.join ','}"
-      new_resource.post_hook.each do |hook|
+      post_hooks.each do |hook|
         cmd += " --post-hook '#{hook}'"
       end
-      cmd += ' ' + new_resource.extra_args.join(' ') if new_resource.extra_args
+      cmd += ' ' + extra_args.join(' ') unless extra_args.empty?
       cmd
     end
   end
