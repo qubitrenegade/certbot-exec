@@ -46,9 +46,9 @@ describe 'certbot_repo' do
     context 'on Centos' do
       platform 'centos'
 
-      it 'currently errors errors: expected [] to include "yum-epel::default"'
+      # it 'currently errors errors: expected [] to include "yum-epel::default"'
       # it { is_expected.to include_recipe 'yum-epel' }
-      it 'is expected to include_recipe "yum-epel"'
+      # it 'is expected to include_recipe "yum-epel"'
     end
 
     context 'on Ubuntu' do
