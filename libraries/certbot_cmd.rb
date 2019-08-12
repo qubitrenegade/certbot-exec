@@ -66,7 +66,7 @@ module CertbotExec
       cmd += ' --agree-tos' if cbe_agree_to_tos?
       cmd += " --server #{cbe_server}"
       cmd += " --email #{cbe_email}" if cbe_email
-      cmd += " --domains #{new_resource.domains.join ','}"
+      cmd += " --domains #{new_resource.domains.uniq.join ','}"
       post_hooks.each do |hook|
         cmd += " --post-hook '#{hook}'"
       end
