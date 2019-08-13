@@ -4,62 +4,17 @@ This library cookbook aims to provide a unified interface for interacting with t
 
 As it is a library cookbook, it does not provide cookbooks to be included in your run-list (in fact, `certbot-exec::default` will warn you as such if it doesn't already).
 
-You probably don't want to use this cookbook directly either, instead opting to wrap it in your own custom provider.  However, as `certbot_exec` API IS designed to be wrapped by other resources, you _can_ provide enough parameters in your cookbook to use this resource directly.
+If you are looking to get started quickly, skip to the [Getting Started](https://github.com/qubitrenegade/certbot-exec#usage) however, you might find the [Design](doc/DESIGN.md) documentation enlightening as this is not a cookbook designed to be consumed directly.
 
-If you are looking to get started quickly, skip to the [Usage](https://github.com/qubitrenegade/certbot-exec#usage) however, you might find the [Design](https://github.com/qubitrenegade/certbot-exec#usage) information enlightening as this is not a cookbook designed to be consumed directly...
+## Plugins
 
-## Design
+`certbot_exec` is designed to work with plugins.  Refer to [Extending](doc/DESIGN.md#extending) on information on how to write your own plugin.
 
-This cookbook is the result of a (perhaps misguided) [attempt](https://github.com/qubitrenegade/certbot-exec/tree/c82a257dde8c7edca706b499f205485295a49be4) to 'solve the  "Chicken and egg" problem of setting up a web server with a self signed cert to obtain a Let's Encrypt signed SSL certificate' by leveraging Chef's "[Accumulator Pattern](https://blog.dnsimple.com/2017/10/chef-accumulators/)".  While I think this was a great learning experience and great exposure to the "Accumulator Pattern", I think it exposed some faults in the design of my API, my knowledge, and if I may be so bold, the Chef docs.  Frankly, I am really fuzzy on `converge_by` and `with_run_context`.
+* CloudFlare: [certbot-exec-cloudflare](https://github.com/qubitrenegade/certbot-exec-cloudflare) - adds [`certbot-dns-cloudflare`](https://certbot-dns-cloudflare.readthedocs.io/en/stable/) authenticator.
 
-The prevailing idea being that, we're running multiple services on this host or we have one host we expose to the public internet that we use to register multiple domain names for, and we really only want to execute `certbot` once for all domain names.
+## Getting Started
 
-So if I'm writing an `xmpp` cookbook, it might run on one server with my `nginx` cookbook today.  But tomorrow, it's likely to run on separate servers.  So I should be able to call `my_custom_resource` from each cookbook without worrying about what the other cookbook is doing, but `my_custom_resource` would "do the right thing" and only "Execute" once.
-
-The original thought was this cookbook would provide `certbot_exec` which would ensure we could `certbot --blah` and provide an easy interface to provide, for instance `certbot_cf`.  In the end the user would be able to execute `certbot_cf` which would just leverage the `certbot_exec` resource by injecting the requisite parameters.
-
-There is a shortcoming here, in that, what if I want to combine two certbot plugins.  Say we want to use the `nginx` installer and the `cloudflare-dns` authenticator?
-
-Do I call both resources?
-
-```ruby
-   certbot_nginx 'foo.bar.com'
-   certbot_cf 'foo.bar.com'
-```
-
-After thinking about it, what I think I really want to happen is for a user to add to their `metadata.rb`
-
-```ruby
-depends 'certbot'
-depends 'certbot-plugin-cloudflare-dns'
-```
-
-And then is able to:
-
-```ruby
-certbot_exec 'foo.bar.com'
-certbot_exec 'bar.bar.com'
-```
-
-and `certbot_exec` is either smart enough, or, doesn't need to know about `certbot-plugin-cloudflare-dns` and whatever is necessary to make that plugin happy happens.
-
-Validation is a real interesting one...
-
-I imagine, you couldn't run `certbot-plugin-nginx` with `certbot-plugin-apache`...  (for sure you can't do `certbot ... --nginx -a cloudflare-dns ...` you have to do `certbot ... -i nginx -a cloudflare-dns ...`)
-
-## Discussion
-
-The idea was that we might have multiple services running on one host where we want to generate our SSL certificates.  But we probably don't want to call `certbot` cli utility multiple times as it has trouble when rereregenerating certificates.  Basically, I want to run `cookbook_a` and `cookbook_b` on the same host today, but they'll likely need to run on separate hosts tomorrow.  So I want to write them like they know nothing about each other, but they need to play nicely with each other.  This should be easy to achieve with a common `certbot` API that can "roll" all invocations into one command.
-
-We probably want Chef to manage `nginx` restarts for instance.  However, at this point we're not really sure when we're renewing the cert from chef... so we're _trying_ to defer to `certbot` to do the actual restarting..
-
-Also, design is not set in stone...  Like, is there a way to load the helpers from the ohai plugin?
-
-I can't figure out how to stub `include_recipe` for a custom resource...
-
-## Usage
-
-### Include in Metadata
+### Include in `certbot-exec` in your Metadata
 
 Include in your `metadata.rb`
 
@@ -69,19 +24,22 @@ Include in your `metadata.rb`
 depends 'certbot-exec'
 ```
 
-#### Use Resource
+### Set required attributes
 
-Use the resource, it can be called multiple times, but will only result in one execution of `certbot`.
+* `default['certbot-exec']['agree_to_tos']` - you must set this `true` to denote your acceptance of LetsEncrypt TOS, documented [here](https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf) (PDF link warning).
+* `default['certbot-exec']['email']` - Email to use with LetsEncrypt.
+
+### Use `certbot_exec` Resource
+
+`certbot_exec` can be called multiple times.  This will only result in one execution of `certbot`.
 
 Note: The `certbot` utility will be executed at the _first_ instance of `certbot_exec` in the run list (order matters!)
-
-#### `certbot_exec`
 
 ```ruby
 certbot_exec 'bar.com'
 
 certbot_exec 'foo.example.com' do
-  extra_args '--cloudflare-dns-whatever'
+  extra_args '--help'
   case node[:platform]
   when 'redhat', 'centos'
     packages 'python2-certbot-dns-cloudflare'
@@ -89,20 +47,14 @@ certbot_exec 'foo.example.com' do
     packages 'python3-certbot-dns-cloudflare'
   end
   post_hook 'systemctl restart theinternet'
-  force true
-  extra_args ' --help'
 end
-
-certbot_exec 'bar.example.com'
 
 certbot_exec 'baz.example.com' do
   post_hook 'systemctl restart httpd'
 end
 ```
 
-#### Example
-
-So for example, this whole thing would result in an `apt install certbot python3-certbot-dns-cloudflare`. for the `package` resource. (instead of `apt install certbot` then `apt install python3-certbot-dns-cloudflare` which is normally what happens when you call `package` twice...)
+This would result in an `apt install certbot python3-certbot-dns-cloudflare`. for the `package` resource. (instead of two invocations of `apt`)
 
 also a `certbot` cli:
 
@@ -110,6 +62,127 @@ also a `certbot` cli:
 certbot ... -d bar.com,foo.example.com,baz.example.com ... --post-hook 'systemctl restart theinternet' --post-hook 'systemctl restart httpd' ... --help
 ```
 
-## TODO
+## Resources
 
-* handle duplicate domain names... no idea what happens if `certbot_exec 'foo.com'; certbot_exec 'bar.com'; certbot_exec 'foo.com'`... should be `-d foo.com,bar.com`... but dunno.  and dunno if that errors?
+This cookbook provides three custom resources that are then wrapped in the `certbot_exec` resource.
+
+### `certbot_exec`
+
+#### Properties
+
+* `domains` - `[String,Array]` - list of domains to generate SSL certificate.
+* `post_hook` - `[String,Array]` - list of commands for `certbot` to execute after successfully generating a new certificate.
+* `extra_args` - [String,Array] - list of additional arguments to pass to `certbot`.
+* `packages` - `[String,Array]` - list of packages to install.
+* `force` - `[True,False]` - defaults to false, if set to true will not validate cert and execute `certbot`.
+
+#### Actions
+
+* `:run` - setup certbot repo, install package, execute certbot.
+
+#### Usage Example
+
+```ruby
+certbot_exec 'foo.com'
+certbot_exec 'foo.com', 'bar.com'
+
+certbot_exec 'execute-certbot' do
+  domains 'foo.com'
+  post_hook 'service nginx restart'
+  extra_args '--help'
+  action :install
+end
+
+certbot_exec 'execute-certbot-with-multiple-domains' do
+  domains %w(foo.com bar.com example.foo.com example2.foo.com)
+  post_hook ['service nginx restart', 'service redis restart']
+  extra_args ['--someflag true', '--help']
+  case node['platform']
+  when 'redhat', 'centos'
+    packages 'python2-certbot-dns-cloudflare'
+  when 'ubuntu', 'debian'
+    packages 'python3-certbot-dns-cloudflare'
+  end
+  action :install
+end
+```
+
+### `certbot_repo`
+
+This resource adds the `certbot` ppa on Ubuntu or includes `yum-epel` on CentOS/RHEL.  It takes no parameters.  The default action is `:create`.
+
+#### Actions
+
+* `:create` - create certbot repo
+
+#### Usage Example
+
+```ruby
+certbot_repo 'certbot-repo'
+
+certbot_repo 'certbot-repo-with-action' do
+  action :create
+end
+```
+
+### `certbot_pkg`
+
+This resource installs packages.  It takes a list of packages to install.  The default and only action is `:install`.  The intent was to provide an interface to install additional packages, but it doesn't quite seem to work as expected...
+
+#### Properties
+
+* `packages` - `[String,Array]` - list of packages to install.
+
+#### Actions
+
+* `:install` - install packages.
+
+#### Usage Example
+
+```ruby
+certbot_pkg 'certbot'
+
+certbot_pkg ['certbot', 'openssl']
+
+certbot_pkg 'certbot-packages' do
+  packages ['certbot', 'openssl']
+  action :install
+end
+```
+
+### `certbot_cmd`
+
+This resurce executes the `certbot` CLI command.  By default it attempts to validate the certificates in `/etc/letsencrypt/live` and executes if a valid cert isn't found.
+
+#### Actions
+
+* `:exec` - Validate cert and execute.
+* `:force_exec` - Execute regardless if valid cert is found.
+
+#### Properties
+
+* `domains` - `[String,Array]` - list of domains to generate SSL certificate.
+* `post_hook` - `[String,Array]` - list of commands for `certbot` to execute after successfully generating a new certificate.
+* `extra_args` - [String,Array] - list of additional arguments to pass to `certbot`.
+* `force` - [True,False]` - defaults to false, if set to true will not validate cert and execute `certbot`.
+
+#### Usage Example
+
+```ruby
+certbot_cmd 'foo.com'
+certbot_cmd 'foo.com', 'bar.com'
+
+certbot_cmd 'execute-certbot' do
+  domains 'foo.com'
+  post_hook 'service nginx restart'
+  extra_args '--help'
+  action :force_exec
+end
+
+certbot_cmd 'execute-certbot-with-multiple-domains' do
+  domains %w(foo.com bar.com example.foo.com example2.foo.com)
+  post_hook ['service nginx restart', 'service redis restart']
+  extra_args ['--someflag true', '--help']
+  action :exec
+end
+```
