@@ -8,7 +8,7 @@ default['certbot-exec'] = {
   email: 'youneedtosetme@least.com',
 
   # If this should be a dry run, typically this should be false.
-  dry_run: true,
+  dry_run: false,
 
   # Which ACME server to use
   server: 'prod',

@@ -7,16 +7,14 @@ property :extra_args, [String, Array], default: [], coerce: proc { |x| [x].flatt
 property :packages, [String, Array], default: [], coerce: proc { |x| [x].flatten }
 property :force, [TrueClass, FalseClass], default: false
 
-default_action :install
-
-action :install do
+action :run do
   initial_setup
   certbot_packages_install
   certbot_exec_setup
 end
 
 def after_created
-  run_action(:install)
+  run_action(:run)
   action :nothing # don't run twice
 end
 

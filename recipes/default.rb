@@ -26,7 +26,16 @@
 #
 # This recipe intentionally left empty.
 
-log "You don't need to add certbot-exec to your run list, just your metatdata.rb" do
+log "Don't include #{cookbook_name}::default recipe message" do
+  message <<~END_WARNING
+
+    !!!!!!!!!!
+      You don't need to add certbot-exec to your run list, just your metatdata.rb
+
+      refer to documentation for further details: 
+        https://github.com/qubitrenegade/certbot-exec/blob/master/README.md
+    !!!!!!!!!!
+  END_WARNING
   level :warn
   action :write
 end

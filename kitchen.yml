@@ -44,3 +44,6 @@ suites:
       certbot-exec:
         print_cmd: true
         server: stage
+  - name: include-certbot-exec
+    run_list:
+      - recipe[certbot-exec::default]

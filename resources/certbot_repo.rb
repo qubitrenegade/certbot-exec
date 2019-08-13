@@ -1,8 +1,6 @@
 provides :certbot_repo
 resource_name :certbot_repo
 
-default_action :create
-
 action :create do
   case node['platform']
   when 'centos', 'redhat', 'scientific', 'oracle'

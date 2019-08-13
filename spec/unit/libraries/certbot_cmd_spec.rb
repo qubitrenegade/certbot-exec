@@ -35,7 +35,11 @@ new_resource = Struct.new(:domains, :post_hook, :extra_args)
                      )
 
 describe CertbotExec::CertbotCmd do
-  let(:cb_cmd) { Object.new.extend(CertbotExec::CertbotCmd) }
+  let(:cb_cmd) do
+    class Object
+      include CertbotExec::CertbotCmd
+    end.new
+  end
   before do
     allow(cb_cmd)
       .to receive(:node)
@@ -47,7 +51,7 @@ describe CertbotExec::CertbotCmd do
 
   describe '#cmd' do
     it 'executes certbot with expected parameters' do
-      full_cmd = 'certbot certonly -q --expand --dry-run '
+      full_cmd = 'certbot certonly -q --expand '
       full_cmd += '--server https://acme-v02.api.letsencrypt.org/directory '
       full_cmd += '--email youneedtosetme@least.com --domains domain-foo1,domain-bar2 '
       full_cmd += "--post-hook 'post-hook foo 1' --post-hook 'post-hook foo 2' "

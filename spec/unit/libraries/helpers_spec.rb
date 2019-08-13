@@ -47,7 +47,7 @@ describe CertbotExec::Helpers do
 
   describe '#cbe_dry_run?' do
     it 'checks for dry run' do
-      expect(cbeh.cbe_dry_run?).to eql true
+      expect(cbeh.cbe_dry_run?).to eql false
     end
   end
 

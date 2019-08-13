@@ -41,7 +41,7 @@ describe 'certbot-exec::default' do
 
     it do
       is_expected
-        .to write_log "You don't need to add certbot-exec to your run list, just your metatdata.rb"
+        .to write_log "Don't include certbot-exec::default recipe message"
     end
   end
 

@@ -35,7 +35,7 @@ describe 'certbot_exec' do
       certbot_exec 'foo.example.com'
     end
 
-    it { is_expected.to install_certbot_exec 'foo.example.com' }
+    it { is_expected.to run_certbot_exec 'foo.example.com' }
 
     it { is_expected.to create_ohai_plugin 'certbot' }
     it { is_expected.to nothing_ohai 'certbot' }

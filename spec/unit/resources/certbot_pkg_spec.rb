@@ -37,10 +37,10 @@ describe 'certbot_pkg' do
 
   context 'certbot_pkg resource with no input' do
     recipe do
-      certbot_pkg 'foo'
+      certbot_pkg 'certbot'
     end
 
-    it { is_expected.to install_certbot_pkg 'foo' }
+    it { is_expected.to install_certbot_pkg 'certbot' }
     it 'should install certbot package' do
       is_expected.to install_package('install-certbot')
         .with(package_name: ['certbot'])
@@ -48,11 +48,12 @@ describe 'certbot_pkg' do
   end
   context 'certbot_pkg with string input' do
     recipe do
-      certbot_pkg 'foo' do
+      certbot_pkg 'install-foo' do
         packages 'foo'
       end
     end
 
+    it { is_expected.to install_certbot_pkg 'install-foo' }
     it 'should install certbot and foo' do
       is_expected.to install_package('install-certbot')
         .with(package_name: %w(certbot foo))
