@@ -6,6 +6,6 @@ This file is used to list changes made in each version of the certbot-exec cookb
 
 Initial release.
 
-- change 0
-- change 1
+# 0.1.1
 
+- Add `package_list` function to enable "hooking" into to add packages to be installed. 
