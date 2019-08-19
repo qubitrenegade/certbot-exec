@@ -1,4 +1,3 @@
-
 module CertbotExec
   module Helpers
     def certbot_exec

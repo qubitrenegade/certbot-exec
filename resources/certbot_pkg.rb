@@ -4,9 +4,9 @@ resource_name :certbot_pkg
 property :packages, [String, Array], name_property: true, coerce: proc { |x| [x].flatten }
 
 action :install do
-  package 'install-certbot' do
-    extend CertbotExec::Helpers
-    package_name (cbe_packages + new_resource.packages).uniq
-    action :install
-  end
+  package_resource
+end
+
+action_class do
+  include CertbotExec::PkgResource
 end

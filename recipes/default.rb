@@ -32,7 +32,7 @@ log "Don't include #{cookbook_name}::default recipe message" do
     !!!!!!!!!!
       You don't need to add certbot-exec to your run list, just your metatdata.rb
 
-      refer to documentation for further details: 
+      refer to documentation for further details:
         https://github.com/qubitrenegade/certbot-exec/blob/master/README.md
     !!!!!!!!!!
   END_WARNING
