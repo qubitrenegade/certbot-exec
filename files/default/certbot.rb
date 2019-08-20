@@ -42,7 +42,12 @@ Ohai.plugin :Certbot do
       @ssl_dir = ssl_dir
       @ssl_cert_path = File.join ssl_dir, 'fullchain.pem'
       @ssl_key_path = File.join ssl_dir, 'privkey.pem'
-      @cert = OpenSSL::X509::Certificate.new(File.read(@ssl_file))
+      begin
+        @cert = OpenSSL::X509::Certificate.new(File.read(ssl_cert_path))
+      rescue => e
+        puts '[!] certbot-exec Ohai Plugin - Error loading SSL Certificate: #{ssl_cert_path}'
+        puts "[!] #{e}"
+      end
     end
 
     def cert_name
