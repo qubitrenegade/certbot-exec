@@ -6,7 +6,7 @@ resource_name :certbot_cmd
 property :domains, [String, Array], name_property: true, coerce: proc { |x| [x].flatten }
 property :post_hook, [String, Array], default: [], coerce: proc { |x| [x].flatten }
 property :extra_args, [String, Array], coerce: proc { |x| [x].flatten }
-property :force, [TrueClass, FalseClass], default: false
+property :force, [true, false], default: false
 
 action :exec do
   if new_resource.force

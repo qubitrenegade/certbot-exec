@@ -19,5 +19,3 @@ def default_attrs_from_file
   )
   default
 end
-
-at_exit { ChefSpec::Coverage.report! }

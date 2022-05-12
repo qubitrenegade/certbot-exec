@@ -7,7 +7,7 @@ property :domains, [String, Array], name_property: true, coerce: proc { |x| [x].
 property :post_hook, [String, Array], default: [], coerce: proc { |x| [x].flatten }
 property :extra_args, [String, Array], default: [], coerce: proc { |x| [x].flatten }
 property :packages, [String, Array], default: [], coerce: proc { |x| [x].flatten }
-property :force, [TrueClass, FalseClass], default: false
+property :force, [true, false], default: false
 
 action :run do
   initial_setup

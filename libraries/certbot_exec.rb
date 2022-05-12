@@ -40,8 +40,8 @@ module CertbotExec
           post_hook []
           extra_args []
           notifies :install, 'certbot_pkg[certbot]', :before
-          notifies :create, 'ohai_plugin[certbot]', :immediate
-          notifies :reload, 'ohai[certbot]', :immediate
+          notifies :create, 'ohai_plugin[certbot]', :immediately
+          notifies :reload, 'ohai[certbot]', :immediately
           action :exec
         end
       end

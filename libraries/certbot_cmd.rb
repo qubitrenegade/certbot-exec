@@ -35,7 +35,7 @@ module CertbotExec
     def initialize(*args)
       @post_hook = []
       @extra_args = []
-      super *args
+      super(*args)
     end
 
     def certbot
