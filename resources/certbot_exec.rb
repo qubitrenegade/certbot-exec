@@ -1,3 +1,5 @@
+unified_mode true
+
 provides :certbot_exec
 resource_name :certbot_exec
 

@@ -1,3 +1,5 @@
+unified_mode true
+
 provides :certbot_pkg
 resource_name :certbot_pkg
 
