@@ -9,6 +9,15 @@ action :create do
     Chef::Log.warn "Untested on #{platform}" if platform?('redhat', 'scientific', 'oracle')
     include_recipe 'yum-epel'
   when 'ubuntu', 'debian'
-    snap_package 'certbot'
+    # Multiple people report problems with this resource, even on the slack chanel.
+    # snap_package 'certbot' do
+    #   package_name ['certbot']
+    # end
+
+    execute 'install_certbot' do
+      command 'snap install --classic certbot'
+      action :run
+      not_if 'snap list certbot'
+    end
   end
 end
